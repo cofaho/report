@@ -37,10 +37,20 @@ class ArrayDataSet extends AbstractDataSet
         $this->isActive = false;
     }
 
+    public function next()
+    {
+        parent::next();
+        $this->nextMasterLinkPosition();
+    }
+
     public function rewind()
     {
         parent::rewind();
+        $this->nextMasterLinkPosition();
+    }
 
+    protected function nextMasterLinkPosition()
+    {
         if ($this->masterLink === null) {
             return;
         }
