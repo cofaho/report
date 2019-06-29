@@ -1,5 +1,8 @@
 {
     "name": "cofaho/report",
+    "type": "library",
+    "description": "Bands based reports API",
+    "keywords": ["report", "band"],
     "require": {
         "phenx/php-font-lib": "^0.5.1",
         "ext-zlib": "*",
