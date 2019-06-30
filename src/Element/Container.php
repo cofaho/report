@@ -5,10 +5,10 @@ namespace Report\Element;
 
 use Exception;
 use Report\AbstractBandContainer;
+use Report\Page;
 use Report\Renderer\AbstractRenderer;
 use Report\Band\BandInterface;
 use Report\Helper\Rectangle;
-use Report\PageTemplate;
 use Report\Property\Name;
 use Report\Property\OnOnePage;
 use Serializable;
@@ -195,7 +195,7 @@ class Container extends AbstractBandContainer implements ElementInterface, Seria
      */
     public function getHeight(): float
     {
-        return (float)$this->height + $this->getMargin(PageTemplate::MARGIN_TOP) + $this->getMargin(PageTemplate::MARGIN_BOTTOM);
+        return (float)$this->height + $this->getMargin(Page::MARGIN_TOP) + $this->getMargin(Page::MARGIN_BOTTOM);
     }
 
     /**

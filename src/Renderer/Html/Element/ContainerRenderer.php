@@ -13,7 +13,7 @@ use Report\Band\DataHeader;
 use Report\Band\GroupFooter;
 use Report\Band\GroupHeader;
 use Report\Element\Container;
-use Report\PageTemplate;
+use Report\Page;
 use Report\Renderer\Html\BandRenderer;
 use Report\Renderer\Html\RenderResult;
 use Report\Renderer\Html\ReportRenderer;
@@ -171,7 +171,7 @@ class ContainerRenderer implements ElementRendererInterface
         $this->content = '';
         $this->isFirstBand = true;
 
-        $margins = $this->container->getMargin(PageTemplate::MARGIN_TOP) + $this->container->getMargin(PageTemplate::MARGIN_BOTTOM);
+        $margins = $this->container->getMargin(Page::MARGIN_TOP) + $this->container->getMargin(Page::MARGIN_BOTTOM);
         $parentContainer = $this->container->getParent()->getParent();
 
         $this->container
@@ -197,10 +197,10 @@ class ContainerRenderer implements ElementRendererInterface
             yield from $this->getBandGenerator($footer);
         }
         $units = ReportRenderer::getUserUnits();
-        $marginTop = $this->container->getMargin(PageTemplate::MARGIN_TOP);
-        $marginBottom = $this->container->getMargin(PageTemplate::MARGIN_BOTTOM);
-        $marginLeft = $this->container->getMargin(PageTemplate::MARGIN_LEFT);
-        $marginRight = $this->container->getMargin(PageTemplate::MARGIN_RIGHT);
+        $marginTop = $this->container->getMargin(Page::MARGIN_TOP);
+        $marginBottom = $this->container->getMargin(Page::MARGIN_BOTTOM);
+        $marginLeft = $this->container->getMargin(Page::MARGIN_LEFT);
+        $marginRight = $this->container->getMargin(Page::MARGIN_RIGHT);
         $width = $this->container->getWidth() - $marginLeft - $marginRight;
         $height = $this->container->getHeight();
         $style =

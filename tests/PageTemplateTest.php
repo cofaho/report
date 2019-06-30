@@ -2,16 +2,17 @@
 
 use PHPUnit\Framework\TestCase;
 use Report\Band\DataBand;
+use Report\Page;
 use Report\PageTemplate;
 
-class PageTest extends TestCase
+class PageTemplateTest extends TestCase
 {
     public function testSetMargin()
     {
         $p = new PageTemplate();
         $p->setMargin(2);
 
-        self::assertEquals(2, $p->getMargin(PageTemplate::MARGIN_BOTTOM));
+        self::assertEquals(2, $p->getMargin(Page::MARGIN_BOTTOM));
     }
 
     public function testAddBand()
@@ -27,18 +28,18 @@ class PageTest extends TestCase
     public function testSetFormat()
     {
         $p = new PageTemplate();
-        $p->setFormat(PageTemplate::FORMAT_A4);
+        $p->setFormat(Page::FORMAT_A4);
 
-        self::assertEquals(PageTemplate::FORMAT_A4[0], $p->getWidth());
-        self::assertEquals(PageTemplate::FORMAT_A4[1], $p->getHeight());
+        self::assertEquals(Page::FORMAT_A4[0], $p->getWidth());
+        self::assertEquals(Page::FORMAT_A4[1], $p->getHeight());
     }
 
     public function testSetOrientation()
     {
         $p = new PageTemplate();
-        $p->setFormat(PageTemplate::FORMAT_A4, PageTemplate::ORIENTATION_LANDSCAPE);
+        $p->setFormat(Page::FORMAT_A4, Page::ORIENTATION_LANDSCAPE);
 
-        self::assertEquals(PageTemplate::FORMAT_A4[1], $p->getWidth());
-        self::assertEquals(PageTemplate::FORMAT_A4[0], $p->getHeight());
+        self::assertEquals(Page::FORMAT_A4[1], $p->getWidth());
+        self::assertEquals(Page::FORMAT_A4[0], $p->getHeight());
     }
 }

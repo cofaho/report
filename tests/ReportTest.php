@@ -4,6 +4,7 @@ use PHPUnit\Framework\TestCase;
 use Report\Band\DataBand;
 use Report\Data\DataSet\ArrayDataSet;
 use Report\Element\TextBox;
+use Report\Page;
 use Report\PageTemplate;
 use Report\Report;
 
@@ -24,11 +25,11 @@ class ReportTest extends TestCase
 
     public function testSerializeUnserialize()
     {
-        $report = new Report(Report::UNITS_PT);
+        $report = new Report(Report::UNITS_PX);
 
         $page = new PageTemplate($report);
         $page
-            ->setFormat(PageTemplate::FORMAT_A1)
+            ->setFormat(Page::FORMAT_A1)
             ->setFreeHeight(100);
 
         $ds = new ArrayDataSet([['id' => 1]]);
@@ -44,11 +45,11 @@ class ReportTest extends TestCase
         $serialized = serialize($report);
         $report = unserialize($serialized);
 
-        self::assertEquals(Report::UNITS_PT, $report->getUserUnits());
+        self::assertEquals(Report::UNITS_PX, $report->getUserUnits());
 
         /** @var PageTemplate $page */
         $page = $report->getPages()[0];
-        self::assertEquals(PageTemplate::FORMAT_A1[0], $page->getWidth());
+        self::assertEquals(2245, $page->getWidth());
         self::assertNull($page->getFreeHeight());
 
         /** @var DataBand $band */

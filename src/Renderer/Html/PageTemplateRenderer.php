@@ -15,6 +15,7 @@ use Report\Band\PageFooter;
 use Report\Band\PageHeader;
 use Report\Band\ReportFooter;
 use Report\Band\ReportHeader;
+use Report\Page;
 use Report\PageTemplate;
 use Report\Renderer\Html\Writer\WriterInterface;
 
@@ -106,10 +107,10 @@ class PageTemplateRenderer
 
         $units = ReportRenderer::getUserUnits();
 
-        $marginTop = self::$page->getMargin(PageTemplate::MARGIN_TOP);
-        $marginBottom = self::$page->getMargin(PageTemplate::MARGIN_BOTTOM);
-        $marginLeft = self::$page->getMargin(PageTemplate::MARGIN_LEFT);
-        $marginRight = self::$page->getMargin(PageTemplate::MARGIN_RIGHT);
+        $marginTop = self::$page->getMargin(Page::MARGIN_TOP);
+        $marginBottom = self::$page->getMargin(Page::MARGIN_BOTTOM);
+        $marginLeft = self::$page->getMargin(Page::MARGIN_LEFT);
+        $marginRight = self::$page->getMargin(Page::MARGIN_RIGHT);
         $height = self::$page->getHeight() - $marginTop - $marginBottom;
         $style = 'style="width:' . self::$page->getWidth() . $units .
             ';height:' . $height . $units .
