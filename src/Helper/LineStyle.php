@@ -21,7 +21,13 @@ class LineStyle
      */
     protected $color;
 
-    public function __construct(Color $color = null, $width = 0.05, $style = LineStyle::SOLID )
+    /**
+     * LineStyle constructor.
+     * @param Color|null $color
+     * @param float $width
+     * @param int $style
+     */
+    public function __construct(Color $color = null, $width = 1.0, $style = LineStyle::SOLID)
     {
         $this->style = $style;
         $this->width = $width;
