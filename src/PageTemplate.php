@@ -10,19 +10,7 @@ class PageTemplate extends AbstractBandContainer implements Serializable
     /**
      * @var float
      */
-    protected $width;
-    /**
-     * @var float
-     */
     protected $height;
-    /**
-     * @var float[]
-     */
-    protected $margin = [1, 1, 1, 1];
-    /**
-     * @var float
-     */
-    protected $freeHeight;
     /**
      * @var Report
      */
