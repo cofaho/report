@@ -9,7 +9,7 @@ use Report\Property\Name;
 use Report\Property\OnOnePage;
 use Serializable;
 
-abstract class Element implements ElementInterface, Serializable
+abstract class AbstractElement implements ElementInterface, Serializable
 {
     use OnOnePage, Name;
 
@@ -145,7 +145,7 @@ abstract class Element implements ElementInterface, Serializable
 
     /**
      * @param BandInterface $band
-     * @return Element
+     * @return AbstractElement
      */
     public function setParent(BandInterface $band)
     {

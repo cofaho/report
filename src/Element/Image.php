@@ -5,7 +5,7 @@ namespace Report\Element;
 
 use Report\Helper\Rectangle;
 
-class Image extends Element
+class Image extends AbstractElement
 {
     const FIT_AUTO = 0;
 

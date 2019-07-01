@@ -14,7 +14,7 @@ use Report\Helper\LineStyle;
 use Report\Helper\Rectangle;
 use Report\Renderer\Helper\Text;
 
-class TextBox extends Element
+class TextBox extends AbstractElement
 {
     const ALIGN_LEFT = 0;
 
