@@ -4,4 +4,4 @@ install:
   - composer install
 
 script:
-  - phpunit tests/Report
+  - phpunit tests/Report --bootstrap vendor/autoload.php

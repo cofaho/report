@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Report\\": "src/Report/"
+            "Report\\": "src/Report"
         }
     },
     "require-dev": {
