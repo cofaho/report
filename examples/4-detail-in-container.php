@@ -73,12 +73,12 @@ $text
     ->setPadding(5)
     ->setBackgroundColor($color_green)
     ->setBorderTop($solidLine)
-    ->setWidth(500);
+    ->setWidth(310);
 
 //-- Container --
 $container = new Container($master);
 $container
-    ->setXY(540, 0)
+    ->setXY(350, 0)
     ->setWidth(290);
 
 //-- Detail in container --
@@ -94,7 +94,7 @@ $text = new TextBox($detail, 'Text: [ds2.text]');
 $text
     ->setFontStyle($style)
     ->setPadding(5)
-    ->setWidth(280)
+    ->setWidth(290)
     ->setBorderTop($solidLine)
     ->setBackgroundColor($color_w);
 
