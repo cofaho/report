@@ -56,7 +56,7 @@ $text
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link type="text/css" rel="stylesheet" href="vendor/cofaho/report/src/Renderer/Html/assets/report.css">
+    <link type="text/css" rel="stylesheet" href="vendor/cofaho/report/src/Report/Renderer/Html/assets/report.css">
     <style>
         <?=ReportRenderer::getStyle($report)?>
     </style>

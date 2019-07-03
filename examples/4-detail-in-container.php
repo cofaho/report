@@ -1,8 +1,10 @@
 <?php
 
-use Report\Band\DataBand;use Report\Band\PageFooter;
+use Report\Band\DataBand;
+use Report\Band\PageFooter;
 use Report\Band\PageHeader;
-use Report\Data\DataSet\ArrayDataSet;use Report\Helper\Color;
+use Report\Data\DataSet\ArrayDataSet;
+use Report\Element\Container;use Report\Helper\Color;
 use Report\Helper\FontStyle;
 use Report\Helper\LineStyle;
 use Report\Element\TextBox;
@@ -70,30 +72,34 @@ $text
     ->setXY(40, 0)
     ->setPadding(5)
     ->setBackgroundColor($color_green)
-    ->setBorderBottom($solidLine)
-    ->setWidth(610);
+    ->setBorderTop($solidLine)
+    ->setWidth(500);
 
-//-- Detail --
+//-- Container --
+$container = new Container($master);
+$container
+    ->setXY(540, 0)
+    ->setWidth(290);
+
+//-- Detail in container --
 $detailData = [];
 for($i = 0; $i < 10; ++$i) {
     $detailData[] = ['parent_id' => rand(1, 10), 'text' =>  mb_substr($lorem, 0, rand(10, $lorem_len))];
 }
 
 $detailDataSet = new ArrayDataSet($detailData, 'ds2');
-$detail = new DataBand($page);
+$detail = new DataBand($container);
 $detail->setDataSource($detailDataSet);
 $text = new TextBox($detail, 'Text: [ds2.text]');
 $text
     ->setFontStyle($style)
     ->setPadding(5)
-    ->setXY(200, 0)
-    ->setWidth(450)
-    ->setBorderBottom($solidLine)
+    ->setWidth(280)
+    ->setBorderTop($solidLine)
     ->setBackgroundColor($color_w);
 
 //-- Master/Detail link --
 $detailDataSet->setMasterLink('parent_id', $masterDataSet, 'id');
-$master->addBand($detail);
 
 
 ?><!DOCTYPE html>
@@ -107,7 +113,7 @@ $master->addBand($detail);
     </style>
 </head>
 <body>
-    <?php ReportRenderer::render($report, new EchoWriter()); ?>
+<?php ReportRenderer::render($report, new EchoWriter()); ?>
 </body>
 </html>
 
