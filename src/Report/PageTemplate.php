@@ -3,6 +3,7 @@
 namespace Report;
 
 
+use Exception;
 use Serializable;
 
 class PageTemplate extends AbstractBandContainer implements Serializable
@@ -57,17 +58,26 @@ class PageTemplate extends AbstractBandContainer implements Serializable
     }
 
     /**
-     * @param float[] $format
+     * @param float[]|string $format
      * @param int $orientation
      * @return $this
+     * @throws Exception
      */
     public function setFormat($format, $orientation = Page::ORIENTATION_PORTRAIT)
     {
-        if ($this->report) {
-            $format = Page::getFormatInUnits($format, $this->report->getUserUnits(), $this->getDpi());
+        if (is_string($format) && $this->report) {
+            if (!isset(Page::DIMENSIONS[$format])) {
+                throw new Exception("Unknown page format `$format`");
+            }
+            $format = Page::getFormatInUnits(Page::DIMENSIONS[$format], $this->report->getUserUnits(), $this->getDpi());
         }
+        if (!is_array($format)) {
+            throw new Exception("Wrong page format `$format`");
+        }
+
         $this->setWidth($format[$orientation]);
         $this->setHeight($format[1 - $orientation]);
+
         return $this;
     }
 
