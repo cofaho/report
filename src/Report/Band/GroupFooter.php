@@ -31,5 +31,15 @@ class GroupFooter extends AbstractBand implements PageBreakBeforeInterface, Page
         return $hasChanged;
     }
 
-
+    /**
+     * @return $this
+     */
+    public function initGroupValue()
+    {
+        $ds = $this->getDataSource();
+        if ($ds) {
+            $this->groupValue = $ds->field($this->groupFieldName);
+        }
+        return $this;
+    }
 }

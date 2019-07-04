@@ -278,6 +278,7 @@ class PageTemplateRenderer
                 }
 
                 foreach ($groupFooters as $groupFooter) {
+                    $groupFooter->initGroupValue();
                     if ($groupFooter->isPrintedOnEveryPage()) {
                         self::$footers[] = $groupFooter;
                     }
