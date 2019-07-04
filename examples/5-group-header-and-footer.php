@@ -24,7 +24,6 @@ $page->setMargin(10);
 //-- Styles --
 $color_blue = new Color('#F0F0FF');
 $color_green = new Color('#F0FFF0');
-$color_w = new Color('#FFFFF0');
 $color_gray = new Color('#CCC');
 $style = new FontStyle([
     'font-size' => 20,
