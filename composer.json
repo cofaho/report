@@ -4,10 +4,12 @@
     "description": "Bands based reports API",
     "keywords": ["report", "band"],
     "license": "MIT",
+    "minimum-stability": "dev",
     "require": {
         "phenx/php-font-lib": "^0.5.1",
         "ext-zlib": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "cofaho/pdf": "*"
     },
     "autoload": {
         "psr-4": {
