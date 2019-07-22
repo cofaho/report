@@ -4,8 +4,8 @@ namespace Report\Renderer\Html\Element;
 
 
 use Report\Element\Image;
-use Report\Renderer\Html\RenderResult;
 use Report\Renderer\Html\ReportRenderer;
+use Report\Renderer\RenderResult;
 
 class ImageRenderer implements ElementRendererInterface
 {
@@ -15,7 +15,7 @@ class ImageRenderer implements ElementRendererInterface
      * @param bool $isFirstBand
      * @return RenderResult
      */
-    public static function getRenderResult($image, float $availableHeight, bool $isFirstBand)
+    public static function getRenderResult($image, float $availableHeight, bool $isFirstBand): RenderResult
     {
         if ($image->getY() > $availableHeight) {
             $tailObject = clone $image;
@@ -41,7 +41,7 @@ class ImageRenderer implements ElementRendererInterface
      * @param Image $image
      * @return string
      */
-    public static function getStyle($image)
+    public static function getStyle($image): string
     {
         $units = ReportRenderer::getUserUnits();
         $cssClass = 'image' . spl_object_id($image);

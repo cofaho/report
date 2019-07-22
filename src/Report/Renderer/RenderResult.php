@@ -1,12 +1,12 @@
 <?php
 
-namespace Report\Renderer\Html;
+namespace Report\Renderer;
 
 
 class RenderResult
 {
     /**
-     * @var string
+     * @var mixed
      */
     public $content;
     /**
@@ -14,7 +14,7 @@ class RenderResult
      */
     public $tailObject;
 
-    public function __construct(string $content = '', $tailObject = null)
+    public function __construct($content = null, $tailObject = null)
     {
         $this->content = $content;
         $this->tailObject = $tailObject;

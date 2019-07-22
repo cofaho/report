@@ -12,6 +12,7 @@ use Report\Element\ElementInterface;
 use Report\Element\TextBox;
 use Report\Property\OnOnePageInterface;
 use Report\Renderer\Html\Element\ElementRenderer;
+use Report\Renderer\RenderResult;
 
 class BandRenderer
 {

@@ -6,8 +6,8 @@ namespace Report\Renderer\Html\Element;
 use FontLib\Exception\FontNotFoundException;
 use Report\Element\TextBox;
 use Report\Renderer\Html\Helper\ToHtml;
-use Report\Renderer\Html\RenderResult;
 use Report\Renderer\Html\ReportRenderer;
+use Report\Renderer\RenderResult;
 
 class TextBoxRenderer implements ElementRendererInterface
 {
@@ -20,7 +20,7 @@ class TextBoxRenderer implements ElementRendererInterface
      * @return RenderResult
      * @throws FontNotFoundException
      */
-    public static function getRenderResult($text, float $availableHeight, bool $isFirstBand)
+    public static function getRenderResult($text, float $availableHeight, bool $isFirstBand): RenderResult
     {
         if ($text->getY() > $availableHeight) {
             $tailObject = clone $text;
@@ -128,7 +128,7 @@ class TextBoxRenderer implements ElementRendererInterface
      * @param TextBox $text
      * @return string
      */
-    public static function getStyle($text)
+    public static function getStyle($text): string
     {
         $cssClass = 'text' . spl_object_id($text);
         self::$styleIndex[$cssClass] = 1;
@@ -139,7 +139,7 @@ class TextBoxRenderer implements ElementRendererInterface
      * @param TextBox $text
      * @return string
      */
-    protected static function getCSSProperties(TextBox $text)
+    protected static function getCSSProperties(TextBox $text): string
     {
         $units = ReportRenderer::getUserUnits();
 

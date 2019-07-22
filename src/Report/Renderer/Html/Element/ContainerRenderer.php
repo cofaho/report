@@ -15,8 +15,8 @@ use Report\Band\GroupHeader;
 use Report\Element\Container;
 use Report\Page;
 use Report\Renderer\Html\BandRenderer;
-use Report\Renderer\Html\RenderResult;
 use Report\Renderer\Html\ReportRenderer;
+use Report\Renderer\RenderResult;
 
 class ContainerRenderer implements ElementRendererInterface
 {
@@ -60,7 +60,7 @@ class ContainerRenderer implements ElementRendererInterface
      * @return RenderResult
      * @throws FontNotFoundException
      */
-    public static function getRenderResult($container, float $availableHeight, bool $isFirstBand)
+    public static function getRenderResult($container, float $availableHeight, bool $isFirstBand): RenderResult
     {
         $id = spl_object_id($container);
 
@@ -126,7 +126,7 @@ class ContainerRenderer implements ElementRendererInterface
      * @return Generator
      * @throws FontNotFoundException
      */
-    public function getContainerGenerator(Container $container, float $availableHeight)
+    public function getContainerGenerator(Container $container, float $availableHeight): Generator
     {
         $this->container = $container;
 
@@ -149,7 +149,7 @@ class ContainerRenderer implements ElementRendererInterface
      * @param Container $container
      * @return string
      */
-    public static function getStyle($container)
+    public static function getStyle($container): string
     {
         $style = '';
         foreach($container->getBands() as $band) {
@@ -166,7 +166,7 @@ class ContainerRenderer implements ElementRendererInterface
      * @return Generator
      * @throws FontNotFoundException
      */
-    protected function startContainer()
+    protected function startContainer(): Generator
     {
         $this->content = '';
         $this->isFirstBand = true;
@@ -191,7 +191,7 @@ class ContainerRenderer implements ElementRendererInterface
      * @return Generator
      * @throws FontNotFoundException
      */
-    protected function endContainer()
+    protected function endContainer(): Generator
     {
         foreach ($this->footers as $footer) {
             yield from $this->getBandGenerator($footer);
@@ -223,7 +223,7 @@ class ContainerRenderer implements ElementRendererInterface
      * @return Generator
      * @throws FontNotFoundException
      */
-    protected function getBandGenerator(BandInterface $band)
+    protected function getBandGenerator(BandInterface $band): Generator
     {
         if ($this->container->getFreeHeight() == 0) {
             yield from $this->endContainer();
@@ -259,7 +259,7 @@ class ContainerRenderer implements ElementRendererInterface
      * @return Generator
      * @throws FontNotFoundException
      */
-    protected function renderDataBands(BandInterface $mainBand)
+    protected function renderDataBands(BandInterface $mainBand): Generator
     {
         $id = spl_object_id($mainBand);
         /** @var DataHeader $dataHeader */
@@ -431,7 +431,7 @@ class ContainerRenderer implements ElementRendererInterface
      * @param Container $container
      * @return $this
      */
-    public function setContainer(Container $container)
+    public function setContainer(Container $container): ContainerRenderer
     {
         $this->container = $container;
         return $this;

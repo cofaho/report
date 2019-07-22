@@ -3,7 +3,6 @@
 namespace Report\Renderer;
 
 
-use Report\Renderer\Html\Writer\WriterInterface;
 use Report\Report;
 
 abstract class AbstractRenderer
@@ -16,8 +15,6 @@ abstract class AbstractRenderer
      * @var string
      */
     protected static $userUnits = Report::UNITS_PX;
-
-    abstract public static function render(Report $report, WriterInterface $writer);
 
     public static function getScope()
     {

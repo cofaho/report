@@ -6,7 +6,7 @@ namespace Report\Renderer\Html\Element;
 use ReflectionClass;
 use ReflectionException;
 use Report\Element\ElementInterface;
-use Report\Renderer\Html\RenderResult;
+use Report\Renderer\RenderResult;
 
 class ElementRenderer implements ElementRendererInterface
 {
@@ -16,7 +16,7 @@ class ElementRenderer implements ElementRendererInterface
      * @param bool $isFirstBand
      * @return RenderResult
      */
-    public static function getRenderResult($element, float $availableHeight, bool $isFirstBand)
+    public static function getRenderResult($element, float $availableHeight, bool $isFirstBand): RenderResult
     {
         try {
             $renderer = 'Report\\Renderer\\Html\\Element\\' . (new ReflectionClass($element))->getShortName() . 'Renderer';
@@ -33,7 +33,7 @@ class ElementRenderer implements ElementRendererInterface
      * @param ElementInterface $element
      * @return string
      */
-    public static function getStyle($element)
+    public static function getStyle($element): string
     {
         try {
             $renderer = 'Report\\Renderer\\Html\\Element\\' . (new ReflectionClass($element))->getShortName() . 'Renderer';
