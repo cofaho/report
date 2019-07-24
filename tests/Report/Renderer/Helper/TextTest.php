@@ -72,4 +72,55 @@ class TextTest extends TestCase
         $bbox = Text::getTextSize('σႴ♘');
         self::assertEquals(['x' => 0, 'y' => 0, 'width' => 20.34375, 'height' => 16.8], $bbox->toArray());
     }
+
+    public function testTextWithNewLines()
+    {
+        $bbox = Text::getTextSize("1\n2\n3");
+        self::assertEqualsWithDelta(['x' => 0, 'y' => 0, 'width' => 7.86, 'height' => 50.4], $bbox->toArray(), $this->delta);
+    }
+
+    public function testTextInRectWithNewLines()
+    {
+        $style = new FontStyle();
+        $l = Text::strlenInRect("1\n2\n3\n4\n5", $style, 20, 55);
+        self::assertEquals(5, $l);
+    }
+
+    public function testSplit()
+    {
+        $style = new FontStyle();
+        $rows = Text::split($this->s, $style, 300);
+        self::assertEquals([
+            'Lorem ipsum dolor sit amet, consectetur',
+            'adipiscing elit, sed do eiusmod tempor',
+            'incididunt ut labore et dolore magna aliqua.'
+        ], $rows);
+    }
+
+    public function testSplitNoWrap()
+    {
+        $style = new FontStyle();
+        $rows = Text::split($this->s, $style, 300, false);
+        self::assertEquals([
+            'Lorem ipsum dolor sit amet, consectetur adipisc',
+            'ing elit, sed do eiusmod tempor incididunt ut lab',
+            'ore et dolore magna aliqua.'
+        ], $rows);
+    }
+
+    public function testSplitWithNewLines()
+    {
+        $style = new FontStyle();
+        $rows = Text::split($this->s . "\n1\n2\n3", $style, 300);
+        self::assertEquals([
+            'Lorem ipsum dolor sit amet, consectetur',
+            'adipiscing elit, sed do eiusmod tempor',
+            'incididunt ut labore et dolore magna aliqua.',
+            '1',
+            '2',
+            '3'
+        ], $rows);
+    }
+
+
 }

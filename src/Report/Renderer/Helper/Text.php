@@ -61,6 +61,12 @@ class Text
                     $rowWidth = $charWidth;
                 }
                 $textHeight += $lineHeight;
+            } elseif ($char === "\n") {
+                $maxRowWidth = max($maxRowWidth, $wordsLength);
+                $rowWidth = 0;
+                $prevCode = null;
+                $wordsLength = 0;
+                $textHeight += $lineHeight;
             }
         }
         $maxRowWidth = max($maxRowWidth, $rowWidth);
@@ -69,6 +75,77 @@ class Text
             'width' => $maxRowWidth,
             'height' => $textHeight
         ]);
+    }
+
+    /**
+     * @param $text
+     * @param FontStyle|null $style
+     * @param null $maxWidth
+     * @param bool $wordWrap
+     * @param string $encoding
+     * @return string[]
+     * @throws FontNotFoundException
+     */
+    public static function split($text, FontStyle $style = null, $maxWidth = null, $wordWrap = true, $encoding = 'UTF-8')
+    {
+        if ($style === null) {
+            $style = new FontStyle();
+        }
+        $wordsLength = 0;
+        $rowWidth = 0;
+        $fontName = $style->getFontFamily();
+        $fontSize = $style->getFontSize();
+        $letterSpacing = $style->getLetterSpacing();
+        $textLength = mb_strlen($text, $encoding);
+        $char = null;
+        $charCode = null;
+        $prevCode = null;
+        $spaceCode = mb_ord(' ', $encoding);
+        $spaceWidth = self::getCharWidth($fontName, $spaceCode) * $fontSize + $letterSpacing + $style->getWordSpacing();
+        $rows = [];
+        $start = 0;
+        $end = 0;
+        for($i = 0; $i < $textLength; ++$i) {
+            $prevCode = $charCode;
+            $char = mb_substr($text, $i, 1, $encoding);
+            $charCode = mb_ord($char, $encoding);
+            if ($charCode === $spaceCode) {
+                $charWidth = $spaceWidth;
+                if ($wordWrap) {
+                    $wordsLength = $rowWidth;
+                    $end = $i;
+                }
+            } else {
+                $charWidth = self::getCharWidth($fontName, $charCode, $prevCode) * $fontSize + $letterSpacing;
+            }
+            $rowWidth += $charWidth;
+            if ($maxWidth !== null && $rowWidth > $maxWidth) {
+                if ($wordWrap && $wordsLength) {
+                    $rowWidth -= $wordsLength + $spaceWidth;
+                    $prevCode = null;
+                    $wordsLength = 0;
+                } else {
+                    $rowWidth = $charWidth;
+                    $end = $i;
+                }
+                $rows[] = mb_substr($text, $start, $end - $start, $encoding);
+                $start = $end;
+                if ($wordWrap) {
+                    // skip first space
+                    ++$start;
+                }
+            } elseif ($char === "\n") {
+                $end = $i;
+                $rows[] = mb_substr($text, $start, $end - $start, $encoding);
+                $rowWidth = 0;
+                $prevCode = null;
+                $start = $end + 1;
+            }
+
+        }
+        $rows[] = mb_substr($text, $start);
+
+        return $rows;
     }
 
     /**
@@ -120,6 +197,12 @@ class Text
                     $rowWidth = $charWidth;
                     $length = $i;
                 }
+                $textHeight += $lineHeight;
+            } elseif ($char === "\n") {
+                $length = $i;
+                $rowWidth = 0;
+                $prevCode = null;
+                $wordsLength = 0;
                 $textHeight += $lineHeight;
             }
         }
