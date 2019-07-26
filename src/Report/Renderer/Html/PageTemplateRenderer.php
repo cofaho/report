@@ -60,8 +60,6 @@ class PageTemplateRenderer
         self::$page = $page;
         self::$writer = $writer;
 
-        ReportRenderer::getScope()->pageNumber = 0;
-
         self::startPage();
 
         if ($band = $page->getBand(ReportHeader::class)) {

@@ -38,7 +38,7 @@ abstract class AbstractBandContainer extends AbstractBandOwner implements BandCo
 
     /**
      * @param int|null $side
-     * @return mixed
+     * @return float|float[]
      */
     public function getMargin(int $side = null)
     {
