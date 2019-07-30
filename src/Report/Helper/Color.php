@@ -43,6 +43,14 @@ class Color
     }
 
     /**
+     * @return array
+     */
+    public function toNormalizedArray(): array
+    {
+        return [$this->getR() / 255, $this->getG() / 255, $this->getB() / 255];
+    }
+
+    /**
      * @param int $alfa
      * @return $this
      */

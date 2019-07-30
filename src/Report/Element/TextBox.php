@@ -224,7 +224,7 @@ class TextBox extends AbstractElement
         $dx = $this->getHorizontalOffsets();
         $borderTop = $this->getBorderTop();
         $dy = $this->getPaddingTop() + ($borderTop ? $borderTop->getWidth() : 0);
-        $textBBox = $this->getTextBBox();
+        $textBBox = $this->getTextSize();
 
         $textWidth = $textBBox->width - $dx;
         $textHeight = $textBBox->height - $dy;
@@ -292,7 +292,7 @@ class TextBox extends AbstractElement
      * @return Rectangle
      * @throws FontNotFoundException
      */
-    public function getTextBBox()
+    public function getTextSize()
     {
         if ($this->bbox !== null && isset($this->bbox[0])) {
             return clone $this->bbox[0];
@@ -302,27 +302,45 @@ class TextBox extends AbstractElement
         $minWidth = $this->getMinWidth();
         $textWidth = $this->canGrowHorizontal() ? null : $minWidth - $dx;
 
-        $bbox = Text::getTextSize(
+        $size = Text::getTextSize(
             $this->getText(),
             $this->getFontStyle(),
             $textWidth,
             $this->isWordWrap()
         );
 
-        $bbox->x = $this->x;
-        $bbox->y = $this->y;
+        $size->x = $this->x;
+        $size->y = $this->y;
 
-        $bbox->width += $dx;
-        $bbox->width = max($bbox->width, $minWidth);
+        $size->width += $dx;
+        $size->width = max($size->width, $minWidth);
 
-        $bbox->height += $this->getVerticalOffsets();
-        $bbox->height = max($bbox->height, $this->getMinHeight());
+        $size->height += $this->getVerticalOffsets();
+        $size->height = max($size->height, $this->getMinHeight());
 
-        $this->bbox[0] = $bbox;
+        $this->bbox[0] = $size;
 
-        return clone $bbox;
+        return clone $size;
     }
 
+    /**
+     * @return Rectangle
+     * @throws FontNotFoundException
+     */
+    public function getSize()
+    {
+        $size = $this->getTextSize();
+
+        if ($this->isStretchedToBottom()) {
+            if ($this->isHorizontal()) {
+                $size->height = $this->getParent()->getHeight() - $this->getY();
+            } elseif ($this->isVertical()) {
+                $size->width = $this->getParent()->getHeight() - $this->getY();
+            }
+        }
+
+        return $size;
+    }
 
     /**
      * @return Rectangle
@@ -334,18 +352,10 @@ class TextBox extends AbstractElement
             return clone $this->bbox[1];
         }
 
-        $bbox = $this->getTextBBox();
-
-        if ($this->isStretchedToBottom()) {
-            if ($this->isHorizontal()) {
-                $bbox->height = $this->getParent()->getHeight() - $this->getY();
-            } else {
-                $bbox->width = $this->getParent()->getHeight() - $this->getY();
-            }
-        }
+        $bbox = $this->getSize();
 
         if ($alfa = $this->getRotation()) {
-            $alfa = $alfa * M_PI / 180;
+            $alfa = deg2rad($alfa);
             $sin = abs(sin($alfa));
             $cos = abs(cos($alfa));
             $w = $bbox->width * $cos + $bbox->height * $sin;

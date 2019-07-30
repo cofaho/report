@@ -110,8 +110,8 @@ class TextBoxRenderer implements ElementRendererInterface
                 $w = $bbox->height - $dx;
                 $h = $bbox->width - $dy;
             } else {
-                $w = $text->getTextBBox()->width - $dx;
-                $h = $text->getTextBBox()->height - $dy;
+                $w = $text->getTextSize()->width - $dx;
+                $h = $text->getTextSize()->height - $dy;
             }
             $innerHtml = "<div class=\"v-align-$align\" style=\"height: $h$units;width:$w$units\">"
                             . $innerHtml

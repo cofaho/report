@@ -120,7 +120,8 @@ class Text
             }
             $rowWidth += $charWidth;
             if ($maxWidth !== null && $rowWidth > $maxWidth) {
-                if ($wordWrap && $wordsLength) {
+                $canWrapWord = $wordWrap && $wordsLength;
+                if ($canWrapWord) {
                     $rowWidth -= $wordsLength + $spaceWidth;
                     $prevCode = null;
                     $wordsLength = 0;
@@ -130,7 +131,7 @@ class Text
                 }
                 $rows[] = mb_substr($text, $start, $end - $start, $encoding);
                 $start = $end;
-                if ($wordWrap) {
+                if ($canWrapWord) {
                     // skip first space
                     ++$start;
                 }

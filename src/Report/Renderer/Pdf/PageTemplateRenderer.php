@@ -1,9 +1,15 @@
 <?php
 
-namespace Report\Renderer\Html;
+namespace Report\Renderer\Pdf;
 
 
+use Exception;
 use FontLib\Exception\FontNotFoundException;
+use pdf\DataStructure\Matrix;
+use pdf\DataStructure\Rectangle;
+use pdf\Document\Page\ContentStream;
+use pdf\Document\Page\Pages;
+use pdf\PDF;
 use Report\Band\BandExtension;
 use Report\Band\BandInterface;
 use Report\Band\DataBand;
@@ -17,7 +23,7 @@ use Report\Band\ReportFooter;
 use Report\Band\ReportHeader;
 use Report\Page;
 use Report\PageTemplate;
-use Report\Renderer\Html\Writer\WriterInterface;
+use Report\Report;
 
 class PageTemplateRenderer
 {
@@ -38,9 +44,13 @@ class PageTemplateRenderer
      */
     protected static $page;
     /**
-     * @var WriterInterface
+     * @var PDF
      */
-    protected static $writer;
+    protected static $pdf;
+    /**
+     * @var ContentStream
+     */
+    protected static $pageContent;
     /**
      * @var bool first non header band
      */
@@ -49,16 +59,35 @@ class PageTemplateRenderer
      * @var float
      */
     protected static $footerHeight = 0;
+    /**
+     * @var Pages
+     */
+    protected static $pages;
+
+    protected static $unitSizes = [
+        Report::UNITS_PX => 0,
+        Report::UNITS_PT => 1,
+        Report::UNITS_IN => 72,
+        Report::UNITS_CM => 28.3465,
+        Report::UNITS_MM => 2.83465
+    ];
+
+    protected static $unitSize;
 
     /**
      * @param PageTemplate $page
-     * @param WriterInterface $writer
+     * @param PDF $pdf
      * @throws FontNotFoundException
      */
-    public static function render(PageTemplate $page, WriterInterface $writer)
+    public static function render(PageTemplate $page, $pdf)
     {
         self::$page = $page;
-        self::$writer = $writer;
+        self::$pdf = $pdf;
+
+        self::$unitSizes[Report::UNITS_PX] = 72 / $page->getDpi();
+        self::$unitSize = self::$unitSizes[ReportRenderer::getUserUnits()];
+
+        self::$pages = $pdf->addPages();
 
         self::startPage();
 
@@ -73,29 +102,20 @@ class PageTemplateRenderer
         if ($band = $page->getBand(ReportFooter::class)) {
             self::renderBand($band);
         }
-
+/**/
         self::endPage();
     }
 
-    /**
-     * @param PageTemplate $page
-     * @return string
-     */
-    public static function getStyle(PageTemplate $page)
+    protected static function translate($x, $y)
     {
-        $style = '';
-        foreach($page->getBands() as $band) {
-            $style .= BandRenderer::getStyle($band);
-            foreach ($band->getBands() as $childBand) {
-                $style .= BandRenderer::getStyle($childBand);
-            }
-        }
-
-        return $style;
+        $matrix = Matrix::identity();
+        $matrix->translate($x, $y);
+        self::$pageContent->getPageDescription()->concatCurrentTransformationMatrix($matrix);
     }
 
     /**
      * @throws FontNotFoundException
+     * @throws Exception
      */
     protected static function startPage()
     {
@@ -103,21 +123,9 @@ class PageTemplateRenderer
 
         ++ReportRenderer::getScope()->pageNumber;
 
-        $units = ReportRenderer::getUserUnits();
-
         $marginTop = self::$page->getMargin(Page::MARGIN_TOP);
         $marginBottom = self::$page->getMargin(Page::MARGIN_BOTTOM);
-        $marginLeft = self::$page->getMargin(Page::MARGIN_LEFT);
-        $marginRight = self::$page->getMargin(Page::MARGIN_RIGHT);
         $height = self::$page->getHeight() - $marginTop - $marginBottom;
-        $style = 'style="width:' . self::$page->getWidth() . $units .
-            ';height:' . $height . $units .
-            ';padding:' . $marginTop . $units . ' ' .
-                $marginRight . $units . ' ' .
-                $marginBottom . $units . ' ' .
-                $marginLeft . $units . '"';
-        self::$writer->write('<div class="page" ' . $style . '>');
-
         self::$page->setFreeHeight($height);
 
         self::$footerHeight = 0;
@@ -130,6 +138,16 @@ class PageTemplateRenderer
         }
         self::$page->subFreeHeight(self::$footerHeight);
 
+        $unitSize = self::$unitSizes[ReportRenderer::getUserUnits()];
+
+        self::$pdf->addPage(self::$pages, [self::$page->getWidth(), self::$page->getHeight()], $unitSize);
+
+        self::$pageContent = new ContentStream();
+        self::translate(
+            self::$page->getMargin(Page::MARGIN_LEFT),
+            self::$page->getHeight() - self::$page->getMargin(Page::MARGIN_TOP)
+        );
+
         if ($bands = self::$page->getBand(PageHeader::class)) {
             self::renderBand($bands);
         }
@@ -137,7 +155,6 @@ class PageTemplateRenderer
         foreach (self::$headers as $header) {
             self::renderBand($header);
         }
-
     }
 
     /**
@@ -145,7 +162,6 @@ class PageTemplateRenderer
      */
     protected static function endPage()
     {
-        $dh = self::$page->getFreeHeight();
         self::$page->setFreeHeight(self::$footerHeight);
         foreach (self::$footers as $footer) {
             self::renderBand($footer);
@@ -153,14 +169,15 @@ class PageTemplateRenderer
 
         $footer = self::$page->getBand(PageFooter::class);
         if ($footer) {
-            $units = ReportRenderer::getUserUnits();
-            if ($dh > 0.1) {
-                self::$writer->write("<div class=\"band\" style=\"height:$dh$units\"></div>");
-            }
             self::renderBand($footer);
         }
-        self::$writer->write('</div>');
+
+        if (self::$pageContent) {
+            self::$pdf->writePageObject(self::$pageContent);
+            self::$pageContent = null;
+        }
     }
+
 
     /**
      * @param BandInterface $band
@@ -174,10 +191,11 @@ class PageTemplateRenderer
         }
 
         $result = BandRenderer::getRenderResult($band, self::$isFirstBand);
-        if (!empty($result->content)) {
-            self::$writer->write($result->content);
+        if ($result->content !== null) {
+            self::$pageContent->data->append($result->content);
             $h = $band->getHeight();
             self::$page->subFreeHeight($h);
+            self::translate(0, -$h);
         }
 
         while ($result->tailObject) {
@@ -185,10 +203,11 @@ class PageTemplateRenderer
             $band = $result->tailObject;
             self::startPage();
             $result = BandRenderer::getRenderResult($band, self::$isFirstBand);
-            if (!empty($result->content)) {
-                self::$writer->write($result->content);
+            if ($result->content !== null) {
+                self::$pageContent->data->append($result->content);
                 $h = $band->getHeight();
                 self::$page->subFreeHeight($h);
+                self::translate(0, -$h);
             }
         }
     }
