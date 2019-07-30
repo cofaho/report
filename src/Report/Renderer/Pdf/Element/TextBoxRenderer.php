@@ -91,11 +91,7 @@ class TextBoxRenderer
             ->concatCurrentTransformationMatrix($matrix)
             ->setFillRGB($textBox->getBackgroundColor()->toNormalizedArray())
             ->rectangle(0, -$size->height, $size->width, $size->height)
-            ->fill()
-            ->setFillRGB($fontStyle->getColor()->toNormalizedArray())
-            ->beginText()
-            ->setMatrix($textMatrix)
-            ->setFont('/F1', $fontStyle->getFontSize());
+            ->fill();
 
         if ($borderTopWidth) {
             $y = - $borderTopWidth / 2;
@@ -149,6 +145,12 @@ class TextBoxRenderer
         if ($fontStyle->getWordSpacing()) {
             $content->setWordSpacing($fontStyle->getWordSpacing());
         }
+
+        $content
+            ->setFillRGB($fontStyle->getColor()->toNormalizedArray())
+            ->beginText()
+            ->setMatrix($textMatrix)
+            ->setFont('/F1', $fontStyle->getFontSize());
 
         foreach ($rows as $i => $row) {
             if ($i === 0) {
