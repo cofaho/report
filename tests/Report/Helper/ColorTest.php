@@ -23,4 +23,11 @@ class ColorTest extends TestCase
         self::assertEquals(2, $color->getG());
         self::assertEquals(30, $color->getAlfa());
     }
+
+    public function testToNormalizedArray()
+    {
+        $color = new Color(100, 10, 255);
+        self::assertEquals([100/255, 10/255, 1], $color->toNormalizedArray());
+    }
+
 }
