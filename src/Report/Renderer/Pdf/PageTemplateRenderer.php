@@ -6,9 +6,8 @@ namespace Report\Renderer\Pdf;
 use Exception;
 use FontLib\Exception\FontNotFoundException;
 use pdf\DataStructure\Matrix;
-use pdf\DataStructure\Rectangle;
 use pdf\Document\Page\ContentStream;
-use pdf\Document\Page\Pages;
+use pdf\ObjectType\IndirectObject;
 use pdf\PDF;
 use Report\Band\BandExtension;
 use Report\Band\BandInterface;
@@ -60,9 +59,9 @@ class PageTemplateRenderer
      */
     protected static $footerHeight = 0;
     /**
-     * @var Pages
+     * @var IndirectObject
      */
-    protected static $pages;
+    protected static $ioPages;
 
     protected static $unitSizes = [
         Report::UNITS_PX => 0,
@@ -87,7 +86,7 @@ class PageTemplateRenderer
         self::$unitSizes[Report::UNITS_PX] = 72 / $page->getDpi();
         self::$unitSize = self::$unitSizes[ReportRenderer::getUserUnits()];
 
-        self::$pages = $pdf->addPages();
+        self::$ioPages = $pdf->addPages();
 
         self::startPage();
 
@@ -102,7 +101,7 @@ class PageTemplateRenderer
         if ($band = $page->getBand(ReportFooter::class)) {
             self::renderBand($band);
         }
-/**/
+
         self::endPage();
     }
 
@@ -140,7 +139,7 @@ class PageTemplateRenderer
 
         $unitSize = self::$unitSizes[ReportRenderer::getUserUnits()];
 
-        self::$pdf->addPage(self::$pages, [self::$page->getWidth(), self::$page->getHeight()], $unitSize);
+        self::$pdf->addPage(self::$ioPages, [self::$page->getWidth(), self::$page->getHeight()], $unitSize);
 
         self::$pageContent = new ContentStream();
         self::translate(
