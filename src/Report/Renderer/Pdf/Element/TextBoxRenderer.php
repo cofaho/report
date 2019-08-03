@@ -135,7 +135,7 @@ class TextBoxRenderer
             : Text::split($textBox->getText(), $fontStyle, $textBox->getWidth() - $textBox->getHorizontalOffsets());
 
         if (count($rows) > 1) {
-            $content->setLeading($fontStyle->getLineHeight());
+            $content->setLineHeight($fontStyle->getLineHeight());
         }
 
         if ($fontStyle->getLetterSpacing()) {
