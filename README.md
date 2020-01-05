@@ -2,7 +2,7 @@
 
 Band based report API
 
-[![Build Status](https://travis-ci.com/cofaho/report.svg?branch=master)](https://travis-ci.com/cofaho/report)
+[![Actions Status](https://github.com/cofaho/report/workflows/test/badge.svg)](https://github.com/cofaho/report/actions)
 
 # Installation
 ```bash
