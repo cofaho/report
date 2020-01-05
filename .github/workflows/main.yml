@@ -15,4 +15,4 @@ jobs:
         run: composer install
         
       - name: Run tests
-        run: vendor/bin/phpunit tests/pdf --bootstrap vendor/autoload.php
+        run: vendor/bin/phpunit tests/Report --bootstrap vendor/autoload.php
