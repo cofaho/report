@@ -196,6 +196,13 @@ class PageTemplateRenderer
             self::$page->subFreeHeight($h);
             self::translate(0, -$h);
         }
+        if ($result->extra) {
+            foreach ($result->extra as $object) {
+                $io = self::$pdf->createIndirectObject($object);
+                self::$pdf->writeIndirectObject($io);
+                self::$pdf->addResource($io);
+            }
+        }
 
         while ($result->tailObject) {
             self::endPage();

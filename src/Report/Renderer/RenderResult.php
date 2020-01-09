@@ -13,10 +13,15 @@ class RenderResult
      * @var mixed
      */
     public $tailObject;
+    /**
+     * @var mixed
+     */
+    public $extra;
 
-    public function __construct($content = null, $tailObject = null)
+    public function __construct($content = null, $tailObject = null, $extra = null)
     {
         $this->content = $content;
         $this->tailObject = $tailObject;
+        $this->extra = $extra;
     }
 }

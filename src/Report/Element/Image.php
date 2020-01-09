@@ -7,11 +7,9 @@ use Report\Helper\Rectangle;
 
 class Image extends AbstractElement
 {
-    const FIT_AUTO = 0;
+    const FIT_KEEP_RATIO = 0;
 
-    const FIT_KEEP_RATIO = 1;
-
-    const FIT_STRETCH = 2;
+    const FIT_STRETCH = 1;
     /**
      * @var string|null
      */
@@ -106,10 +104,10 @@ class Image extends AbstractElement
             switch ($this->getFit()) {
                 case Image::FIT_KEEP_RATIO:
                     if ($w !== null && $h === null) {
-                        $bbox->height = $h * $bbox->width / $w;
+                        $bbox->height = $bbox->height * $w / $bbox->width;
                         $bbox->width = $w;
                     } elseif ($w === null && $h !== null) {
-                        $bbox->width = $w * $bbox->height / $h;
+                        $bbox->width = $bbox->width * $h / $bbox->height;
                         $bbox->height = $h;
                     } else {
                         $whReal = $bbox->width / $bbox->height;
@@ -124,8 +122,8 @@ class Image extends AbstractElement
                     }
                     break;
                 case Image::FIT_STRETCH:
-                    $bbox->width = $w;
-                    $bbox->height = $h;
+                    if ($w) $bbox->width = $w;
+                    if ($h) $bbox->height = $h;
                     break;
             }
         }
@@ -292,7 +290,5 @@ class Image extends AbstractElement
         $this->fit = $fit;
         return $this;
     }
-
-
 
 }
