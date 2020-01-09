@@ -33,21 +33,20 @@ class ImageRenderer
 
         if (isset(self::$images[$name])) {
             $pdfImage = null;
-            $imgHeader = self::$images[$name];
         } else {
             $parser = new ImageParser($image->getSrc());
             $pdfImage = $parser->getImage();
             $imgHeader = $pdfImage->getHeader();
             $imgHeader->Name = $name;
-            self::$images[$name] = $imgHeader;
+            self::$images[$name] = true;
         }
 
         $matrix = Matrix::identity();
         $matrix->scale($image->getRenderWidth(), $image->getRenderHeight())->translate(0, -$image->getRenderHeight());
 
         if ($image->getRotation()) {
-            $w2 = $imgHeader->Width / 2;
-            $h2 = $imgHeader->Height / 2;
+            $w2 = $image->getRenderWidth() / 2;
+            $h2 = $image->getRenderHeight() / 2;
             $matrix
                 ->translate(-$w2, $h2)
                 ->rotate(deg2rad($image->getRotation()))
@@ -59,7 +58,7 @@ class ImageRenderer
         $content
             ->saveState()
             ->concatCurrentTransformationMatrix($matrix)
-            ->addXObject($imgHeader->Name)
+            ->addXObject($name)
             ->restoreState();
 
         return new RenderResult($content, $tailObject, [$pdfImage]);
