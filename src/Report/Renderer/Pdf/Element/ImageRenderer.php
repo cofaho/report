@@ -35,10 +35,9 @@ class ImageRenderer
             $pdfImage = null;
         } else {
             $parser = new ImageParser($image->getSrc());
-            $pdfImage = $parser->getImage();
-            $imgHeader = $pdfImage->getHeader();
-            $imgHeader->Name = $name;
+            $parser->getImage()->getHeader()->Name = $name;
             self::$images[$name] = true;
+            $pdfImage = [$parser->getImage()];
         }
 
         $bbox = $image->getImageBBox();
@@ -62,7 +61,7 @@ class ImageRenderer
             ->addXObject($name)
             ->restoreState();
 
-        return new RenderResult($content, $tailObject, [$pdfImage]);
+        return new RenderResult($content, $tailObject, $pdfImage);
 
     }
 }

@@ -3,7 +3,9 @@
 namespace Report\Element;
 
 
+use Report\Data\Event\RowChanged;
 use Report\Helper\Rectangle;
+use Report\Renderer\AbstractRenderer;
 
 class Image extends AbstractElement
 {
@@ -39,6 +41,14 @@ class Image extends AbstractElement
      * @var float|null
      */
     protected $renderHeight = null;
+    /**
+     * @var bool
+     */
+    protected $hasExpression = false;
+    /**
+     * @var string
+     */
+    protected static $expressionRegexp = '/\[([\w\.]+)\]/';
 
     /**
      * @return string|null
@@ -79,6 +89,8 @@ class Image extends AbstractElement
             $this->rotation,
             $this->band
         ) = unserialize($serialized);
+
+        $this->initEvents();
     }
 
     /**
@@ -259,7 +271,17 @@ class Image extends AbstractElement
      */
     public function getSrc(): ?string
     {
-        return $this->src;
+        if (!$this->hasExpression) {
+            return $this->src;
+        }
+
+        $src = $this->src;
+        $scope = AbstractRenderer::getScope();
+        $src = preg_replace_callback(self::$expressionRegexp, function(array $matches) use ($scope) {
+            return $scope->getExpressionResult($matches[0]);
+        }, $src);
+
+        return $src;
     }
 
     /**
@@ -269,7 +291,8 @@ class Image extends AbstractElement
     public function setSrc(?string $src)
     {
         $this->src = $src;
-        $this->imageSize = getimagesize($src);
+        $this->initEvents();
+        $this->imageSize = getimagesize($this->getSrc());
         return $this;
     }
 
@@ -290,5 +313,35 @@ class Image extends AbstractElement
         $this->fit = $fit;
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasExpression(): bool
+    {
+        return $this->hasExpression;
+    }
+
+    protected function initEvents()
+    {
+        $ds = $this->band->getDataSource();
+        $hadExpression = $this->hasExpression;
+        $this->hasExpression = preg_match(self::$expressionRegexp, $this->src);
+
+        if ($ds) {
+            if ($hadExpression && !$this->hasExpression) {
+                $ds->detachListener(RowChanged::getName(), [$this, 'onDatasetRowChanged']);
+            } elseif ($this->hasExpression && !$hadExpression) {
+                $ds->attachListener(RowChanged::getName(), [$this, 'onDatasetRowChanged']);
+            }
+        }
+    }
+
+    public function onDatasetRowChanged()
+    {
+        $this->bbox = null;
+    }
+
+
 
 }

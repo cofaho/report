@@ -5,6 +5,7 @@ namespace Report\Element;
 
 use PHPUnit\Framework\TestCase;
 use Report\Band\ReportHeader;
+use Report\Data\DataSet\ArrayDataSet;
 use Report\PageTemplate;
 
 class ImageTest extends TestCase
@@ -63,6 +64,17 @@ class ImageTest extends TestCase
         $bbox = $this->image->getBBox();
         self::assertEquals(100, $bbox->width);
         self::assertEquals(50, $bbox->height);
+    }
+
+    public function testSetSrc()
+    {
+        $imgPath = __DIR__ . '/../../_assets/1x1.jpg';
+        $ds = new ArrayDataSet([['img' => $imgPath], ['img' => '2.jpg']], 'ds');
+        $ds->open();
+        $this->image->getParent()->setDataSource($ds);
+        $this->image->setSrc('[ds.img]');
+        self::assertTrue($this->image->hasExpression());
+        self::assertEquals($imgPath, $this->image->getSrc());
     }
 
 

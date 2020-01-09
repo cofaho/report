@@ -986,7 +986,7 @@ class TextBox extends AbstractElement
     {
         $ds = $this->band->getDataSource();
         $hadExpression = $this->hasExpression;
-        $this->hasExpression = preg_match(self::$expressionRegexp, $this->getText());
+        $this->hasExpression = preg_match(self::$expressionRegexp, $this->getRawText());
 
         if ($ds) {
             if ($hadExpression && !$this->hasExpression) {
