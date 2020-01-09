@@ -41,12 +41,13 @@ class ImageRenderer
             self::$images[$name] = true;
         }
 
-        $matrix = Matrix::identity();
-        $matrix->scale($image->getRenderWidth(), $image->getRenderHeight())->translate(0, -$image->getRenderHeight());
+        $bbox = $image->getImageBBox();
 
+        $matrix = Matrix::identity();
+        $matrix->scale($bbox->width, $bbox->height)->translate(0, -$bbox->height);
         if ($image->getRotation()) {
-            $w2 = $image->getRenderWidth() / 2;
-            $h2 = $image->getRenderHeight() / 2;
+            $w2 = $bbox->width / 2;
+            $h2 = $bbox->height / 2;
             $matrix
                 ->translate(-$w2, $h2)
                 ->rotate(deg2rad($image->getRotation()))
