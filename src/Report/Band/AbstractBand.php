@@ -160,8 +160,10 @@ abstract class AbstractBand extends AbstractBandOwner implements BandInterface, 
     {
         if ($this->minHeight === null) {
             $this->minHeight = 0;
-            foreach ($this->elements as $element) {
-                $this->minHeight = max($this->minHeight, $element->getY() + $element->getMinHeight());
+            if (!empty($this->elements)) {
+                foreach ($this->elements as $element) {
+                    $this->minHeight = max($this->minHeight, $element->getY() + $element->getMinHeight());
+                }
             }
         }
         return $this->minHeight;
@@ -174,8 +176,10 @@ abstract class AbstractBand extends AbstractBandOwner implements BandInterface, 
     {
         if ($this->height === null) {
             $this->height = 0;
-            foreach ($this->elements as $element) {
-                $this->height = max($this->height, $element->getMaxY());
+            if (!empty($this->elements)) {
+                foreach ($this->elements as $element) {
+                    $this->height = max($this->height, $element->getMaxY());
+                }
             }
         }
         return $this->height;

@@ -31,13 +31,20 @@ class BandRenderer
             return new RenderResult(null, $tailBand);
         }
 
+        $elements = $band->getElements();
+        if (empty($elements)) {
+            return new RenderResult();
+        }
+
         $content = new PageContents();
         $tailBand = null;
+        $xObjects = [];
 
         $bandHeight = $band->getMinHeight();
 
         $freeHeight = $band->getParent()->getFreeHeight();
-        foreach ($band->getElements() as $element) {
+
+        foreach ($elements as $element) {
             $element->setRenderWidth(null);
             $element->setRenderHeight(null);
             if ($element instanceof Container) {
@@ -45,6 +52,10 @@ class BandRenderer
                 if ($result->content) {
                     $content->append($result->content);
                 }
+                if ($result->extra) {
+                    $xObjects += $result->extra;
+                }
+
                 if (isset($result->tailObject)) {
 
                     if ($band instanceof OnOnePageInterface && $band->isOnOnePage() && !$isFirstBand) {
@@ -70,8 +81,6 @@ class BandRenderer
 
         $band->setHeight($bandHeight);
 
-        $elements = $band->getElements();
-
         usort($elements, function(ElementInterface $a, ElementInterface $b) {
             return $b->getMaxY() <=> $a->getMaxY();
         });
@@ -86,6 +95,10 @@ class BandRenderer
             if ($result->content) {
                 $content->append($result->content);
             }
+            if ($result->extra) {
+                $xObjects += $result->extra;
+            }
+
             if (isset($result->tailObject)) {
                 if ($band instanceof OnOnePageInterface && $band->isOnOnePage() && !$isFirstBand) {
                     $tailBand = clone $band;
@@ -111,7 +124,7 @@ class BandRenderer
             $tailBand->setPageBreakAfter(false);
         }
 
-        return new RenderResult($content, $tailBand);
+        return new RenderResult($content, $tailBand, $xObjects);
 
     }
 

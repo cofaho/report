@@ -20,7 +20,7 @@ class ReportRenderer extends AbstractRenderer
     {
         self::$userUnits = $report->getUserUnits();
 
-        self::$scope->pageNumber = 0;
+        self::getScope()->pageNumber = 0;
 
         foreach ($report->getPages() as $page) {
             $writer->write('<div class="report">');

@@ -27,7 +27,12 @@ class BandRenderer
         if ($band instanceof PageBreakBeforeInterface && $band->isPageBreakBefore()) {
             $tailBand = clone $band;
             $tailBand->setPageBreakBefore(false);
-            return new RenderResult('', $tailBand);
+            return new RenderResult(null, $tailBand);
+        }
+
+        $elements = $band->getElements();
+        if (empty($elements)) {
+            return new RenderResult();
         }
 
         $userUnits = ReportRenderer::getUserUnits();
@@ -38,7 +43,8 @@ class BandRenderer
         $bandHeight = $band->getMinHeight();
 
         $freeHeight = $band->getParent()->getFreeHeight();
-        foreach ($band->getElements() as $element) {
+
+        foreach ($elements as $element) {
             $element->setRenderWidth(null);
             $element->setRenderHeight(null);
             if ($element instanceof Container) {
@@ -68,8 +74,6 @@ class BandRenderer
         }
 
         $band->setHeight($bandHeight);
-
-        $elements = $band->getElements();
 
         usort($elements, function(ElementInterface $a, ElementInterface $b) {
             return $b->getMaxY() <=> $a->getMaxY();

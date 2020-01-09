@@ -25,7 +25,7 @@ class ReportRenderer extends AbstractRenderer
 
         $pdf = new PDF($writer);
 
-        self::$scope->pageNumber = 0;
+        self::getScope()->pageNumber = 0;
 
         foreach ($report->getPages() as $page) {
             PageTemplateRenderer::render($page, $pdf);
