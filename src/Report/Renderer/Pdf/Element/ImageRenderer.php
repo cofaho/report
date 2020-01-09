@@ -11,6 +11,8 @@ use Report\Renderer\RenderResult;
 
 class ImageRenderer
 {
+    protected static $images = [];
+
     /**
      * @param Image $image
      * @param float $availableHeight
@@ -27,10 +29,18 @@ class ImageRenderer
 
         $tailObject = null;
 
-        $parser = new ImageParser($image->getSrc());
-        $pdfImage = $parser->getImage();
-        $imgHeader = $pdfImage->getHeader();
-        $imgHeader->Name = '/img' . md5($image->getSrc());
+        $name = '/img' . md5($image->getSrc());
+
+        if (isset(self::$images[$name])) {
+            $pdfImage = null;
+            $imgHeader = self::$images[$name];
+        } else {
+            $parser = new ImageParser($image->getSrc());
+            $pdfImage = $parser->getImage();
+            $imgHeader = $pdfImage->getHeader();
+            $imgHeader->Name = $name;
+            self::$images[$name] = $imgHeader;
+        }
 
         $matrix = Matrix::identity();
         $matrix->scale($image->getRenderWidth(), $image->getRenderHeight())->translate(0, -$image->getRenderHeight());
