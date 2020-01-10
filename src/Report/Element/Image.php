@@ -292,7 +292,6 @@ class Image extends AbstractElement
     {
         $this->src = $src;
         $this->initEvents();
-        $this->imageSize = getimagesize($this->getSrc());
         return $this;
     }
 
@@ -335,11 +334,14 @@ class Image extends AbstractElement
                 $ds->attachListener(RowChanged::getName(), [$this, 'onDatasetRowChanged']);
             }
         }
+
+        $this->imageSize = getimagesize($this->getSrc());
     }
 
     public function onDatasetRowChanged()
     {
         $this->bbox = null;
+        $this->imageSize = getimagesize($this->getSrc());
     }
 
 
